@@ -1,0 +1,44 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE project PUBLIC "-//audacityproject-1.3.0//DTD//EN" "http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" >
+<project xmlns="http://audacity.sourceforge.net/xml/" projname="FanfareTrompete_data" version="1.3.0" audacityversion="2.3.3" sel0="1.6370267055" sel1="1.7814031228" vpos="0" h="0.0000000000" zoom="429.4370993590" rate="44100.0" snapto="off" selectionformat="hh:mm:ss + milliseconds" frequencyformat="Hz" bandwidthformat="octaves">
+	<tags>
+		<tag name="Software" value="Logic 10.2.0"/>
+		<tag name="COMMENTS" value=" 00000000 00000210 00000AE0 000000000002B110 00000000 00012E0A 00000000 00000000 00000000 00000000 00000000 00000000"/>
+	</tags>
+	<wavetrack name="413203__joepayne__clean-and-pompous-fanfare-trumpet" isSelected="0" height="150" minimized="0" channel="0" linked="1" mute="0" solo="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="72193">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808649.au" len="72193" min="-0.347371" max="0.620247" rms="0.046753"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="1.63702671" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="6367">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808e20.au" len="6367" min="-0.008353" max="0.008257" rms="0.002115"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="413203__joepayne__clean-and-pompous-fanfare-trumpet" isSelected="0" height="150" minimized="0" channel="1" linked="0" mute="0" solo="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="72193">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808498.au" len="72193" min="-0.351658" max="0.630109" rms="0.047339"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="1.63702671" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="6367">
+				<waveblock start="0">
+					<simpleblockfile filename="e08087d0.au" len="6367" min="-0.010168" max="0.008106" rms="0.002216"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+</project>

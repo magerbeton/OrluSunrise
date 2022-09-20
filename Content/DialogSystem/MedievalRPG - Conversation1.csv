@@ -1,0 +1,7 @@
+,Index,Inhalt,NextSheet
+0,0,Hallo...,"((Index=1,buttonName=""Neu im Dorf"",ActionID=0,Item=(()),DataTable=None,QuestIndex=0),(Index=3,buttonName=""Neue Quest"",ActionID=0,Item=(()),DataTable=None,QuestIndex=0),(Index=4,buttonName=""Schadensbericht"",ActionID=0,Item=(()),DataTable=DataTable'/Game/QuestSystem/MedievalRPG_-_Quest02.MedievalRPG_-_Quest02',QuestIndex=2))"
+1,1,Das freut mich zu hören,"((Index=2,buttonName=""Weiter"",ActionID=0,Item=(()),DataTable=None,QuestIndex=0))"
+2,2,Es gibt außerhalb des Dorfs einen Fluss... Du kannst dort drin schwimmen.,"((Index=-1,buttonName=""None"",ActionID=0,Item=(()),DataTable=None,QuestIndex=0))"
+3,3,Vor den Tooren des Dorfs gab es einen Kravall.... Könntest du nachsehen wie es dort aussieht?,"((Index=-1,buttonName=""None"",ActionID=3,Item=(()),DataTable=DataTable'/Game/QuestSystem/MedievalRPG_-_Quest02.MedievalRPG_-_Quest02',QuestIndex=0))"
+4,4,Der schaden scheint sich ja in Grenzen zu halten.,"((Index=-1,buttonName=""None"",ActionID=0,Item=(()),DataTable=None,QuestIndex=0))"
+5,5,Bürgermeister,"((Index=-1,buttonName=""None"",ActionID=0,Item=(()),DataTable=None,QuestIndex=0))"

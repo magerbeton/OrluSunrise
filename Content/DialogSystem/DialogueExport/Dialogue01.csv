@@ -1,0 +1,5 @@
+,Index,Inhalt,NextSheet,EditorPosition
+0,0,1,"((Index=1,buttonName=""1"",ActionID=0,Item=(()),DataTable=None,QuestIndex=0),(Index=2,buttonName=""2"",ActionID=0,Item=(()),DataTable=None,QuestIndex=0))",EditorPosition=(X=766.0,Y=200.0)
+2,2,2,"((Index=-1,buttonName="""",ActionID=0,Item=(()),DataTable=None,QuestIndex=0))",EditorPosition=(X=1130.0,Y=404.0)
+1,1,1,"((Index=-1,buttonName="""",ActionID=0,Item=(()),DataTable=None,QuestIndex=0))",EditorPosition=(X=495.0,Y=408.0)
+3,3,Test1,"((Index=-1,buttonName="""",ActionID=0,Item=(()),DataTable=None,QuestIndex=0))",EditorPosition=(X=0.0,Y=0.0)

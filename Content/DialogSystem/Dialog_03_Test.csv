@@ -1,0 +1,5 @@
+,Index,Inhalt,NextSheet
+0,0,Hallo mein name ist konsti wie gehts,"((Index=1,buttonName=""Gut"",ActionID=0,Item=(()),DataTable=None,QuestIndex=0),(Index=2,buttonName=""Schlecht"",ActionID=0,Item=(()),DataTable=None,QuestIndex=0))"
+1,1,Schön für dich,"((Index=-1,buttonName="""",ActionID=0,Item=(()),DataTable=None,QuestIndex=0),(Index=0,buttonName=""Schlecht"",ActionID=0,Item=(()),DataTable=None,QuestIndex=0))"
+2,2,Oh du arme,"((Index=-1,buttonName="""",ActionID=0,Item=(()),DataTable=None,QuestIndex=0),(Index=0,buttonName=""Schlecht"",ActionID=0,Item=(()),DataTable=None,QuestIndex=0))"
+3,3,Frida,"((Index=-1,buttonName="""",ActionID=0,Item=(()),DataTable=None,QuestIndex=0))"

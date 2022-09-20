@@ -1,0 +1,6 @@
+,QuestStepID,Title,Description,ActionID,ItemStruct
+0,0,Well in Ornwell,Get to the well in Ornwell.,0,"((ItemID=0,Name=""None"",Amount=0,Quality=0))"
+1,1,Other Well,Go to the other well which is hidden on a little farm.,0,"((ItemID=0,Name=""None"",Amount=0,Quality=0))"
+2,2,Hunting,Get 10 wild in durchschnittlich,1,"((ItemID=4,Name=""None"",Amount=10,Quality=3))"
+3,3,The Chief,Rede mit dem Bürgermeister in der Dorfmitte,3,"((ItemID=0,Name=""None"",Amount=0,Quality=0))"
+4,4,Reward,Quest Finished. Go to the quest reward guy at the market of Duyandrill,999,"((ItemID=4,Name=""None"",Amount=15,Quality=6),(ItemID=5,Name=""None"",Amount=1,Quality=5))"

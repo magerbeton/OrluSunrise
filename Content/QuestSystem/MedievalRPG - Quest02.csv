@@ -1,0 +1,5 @@
+,QuestStepID,Title,Description,ActionID,ItemStruct
+0,0,Bürgermeister,Rede mit dem Bürgermeister um mehr informationen über deine Aufgabe zu bekommen,3,"((ItemID=0,Name=""None"",Amount=0,Quality=0))"
+1,1,Krawall,Am Toor des Dorfes hat es wohl einen Krawall gegeben. Gehe diesen untersuchen.,0,"((ItemID=0,Name=""None"",Amount=0,Quality=0))"
+2,2,Bürgermeister,Gehe zurück zum Bürgermeister und berichte ihm von den Schäden.,3,"((ItemID=0,Name=""None"",Amount=0,Quality=0))"
+3,3,Reward,Hole dir deine Belohnung beim Schatzmeister ab!,0,"((ItemID=2,Name=""None"",Amount=5,Quality=3))"
