@@ -3,10 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BoosterStruct.h"
 #include "LifeskillStruct.h"
-#include "XpBoostTimerStruct.h"
+#include "XpTypeEnum.h"
 #include "Components/ActorComponent.h"
 #include "LevelComponent.generated.h"
+
+class UBuffComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelUp, int, XpType);
 
@@ -42,14 +45,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Variables")
 	float GeneralXpBonus; // temporary buffs which can be started through food or potions
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="InitialVariables")
+	UBuffComponent* XpBuffComponent;
+	
 	UPROPERTY()
 	TArray<float> SkillXpBonus; //only gets affected by equipment -> perma buffs
 
 	UFUNCTION(BlueprintCallable, Category="XP")
 	bool AddXpToSkill(int SkillId, float XpAmount);
+	bool AddXpToSkill(EXpTypeEnum XpType, float XpAmount);
 
 	UFUNCTION(BlueprintCallable, Category="Constructor")
-	void OverwriteData(TArray<int> newLevels, TArray<float> newMaxXp, TArray<float> newCurrentXp, TArray<FXpBoostTimerStruct> newActiveXpBoosts);
+	void OverwriteData(TArray<int> newLevels, TArray<float> newMaxXp, TArray<float> newCurrentXp, UBuffComponent* XpBuffComp);
 
 	UFUNCTION(BlueprintCallable, Category="Levels")
 	int GetTotalLevel() const;
@@ -65,26 +72,4 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnLevelUp LevelUp;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Variables")
-	TArray<FXpBoostTimerStruct> ActiveXpBoosts;
-
-	UPROPERTY()
-	FTimerHandle ActiveXpBoostTimerHandle;
-	
-	UFUNCTION()
-	void InitializeXpBoosts();
-
-	UFUNCTION()
-	void XpBuffFinished();
-
-	UFUNCTION(BlueprintCallable, Category="Xp Boost")
-	void SortXpBoostIntoTimeline(FXpBoostTimerStruct XpBoost);
-
-	UFUNCTION()
-	void SetNextTimer();
-
-	void ReduceAllTimersBySeconds(float time);
-
-	float CalculateTotalXpBoost();
 };

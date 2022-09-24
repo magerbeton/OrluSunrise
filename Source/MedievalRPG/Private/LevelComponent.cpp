@@ -3,6 +3,8 @@
 
 #include "LevelComponent.h"
 
+#include "BoosterStruct.h"
+#include "BuffComponent.h"
 #include "LifeskillStruct.h"
 
 // Sets default values for this component's properties
@@ -24,7 +26,8 @@ ULevelComponent::ULevelComponent()
 	
 	Levels.Init(0,Names.Num());
 	CurrentXp.Init(0.0f,Names.Num());
-	MaxXp.Init(0.0f,Names.Num());
+	MaxXp.Init(100.0f,Names.Num());
+	SkillXpBonus.Init(0.0f,Names.Num());
 	GeneralXpBonus = 0.0f;
 
 	
@@ -38,7 +41,16 @@ void ULevelComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	// ...
-	
+
+	TArray<UActorComponent*> BuffComponents;
+	GetOwner()->GetComponents(UBuffComponent::StaticClass(),BuffComponents,false);
+	for(UActorComponent* BuffComp : BuffComponents)
+	{
+		if(BuffComp->ComponentHasTag(FName("XpBoost")))
+		{
+			XpBuffComponent = Cast<UBuffComponent>(BuffComp);
+		}
+	}
 }
 
 
@@ -52,28 +64,51 @@ void ULevelComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 bool ULevelComponent::AddXpToSkill(int SkillId, float XpAmount)
 {
+    //GEngine->AddOnScreenDebugMessage(-1,2.0f,FColor::Cyan,FString::Printf(TEXT("Skill ID: %i, CurrentXpLen: %i, MaxXpLen: %i, Levels: %i"),SkillId,CurrentXp.Num(),MaxXp.Num(),Levels.Num()));
+	//UE_LOG(LogTemp,Display,TEXT("Skill ID: %i, CurrentXpLen: %i, MaxXpLen: %i, Levels: %i"),SkillId,CurrentXp.Num(),MaxXp.Num(),Levels.Num());
+	
 	if(CurrentXp.IsValidIndex(SkillId))
 	{
-		CurrentXp[SkillId] += XpAmount * (1+GeneralXpBonus+SkillXpBonus[SkillId]);
-		while(CurrentXp[SkillId]>MaxXp[SkillId])
+		if(!XpBuffComponent->IsValidLowLevel())
 		{
-			Levels[SkillId] += 1;
-			CurrentXp[SkillId] -= MaxXp[SkillId];
-			UE_LOG(LogTemp,Display,TEXT("Leveled %s up to level %i"),*Names[SkillId].ToString(),Levels[SkillId]);
-			LevelUp.Broadcast(SkillId);
+			UE_LOG(LogTemp,Warning,TEXT("Buffcomponent is missing in %s"),__func__);
+			return false;
 		}
-		UE_LOG(LogTemp,Display,TEXT("added %f to %s"),XpAmount,*Names[SkillId].ToString());
+		const float TotalXpBoost = XpBuffComponent->CalculateTotalXpBoost();
+		CurrentXp[SkillId] += XpAmount * (1+TotalXpBoost+SkillXpBonus[SkillId]);
+		if(abs(MaxXp[SkillId]) != 0.0f)
+		{
+			while(CurrentXp[SkillId]>MaxXp[SkillId])
+			{
+				Levels[SkillId] += 1;
+				CurrentXp[SkillId] -= MaxXp[SkillId];
+				UE_LOG(LogTemp,Display,TEXT("Leveled %s up to level %i"),*Names[SkillId].ToString(),Levels[SkillId]);
+				LevelUp.Broadcast(SkillId);
+			}
+			UE_LOG(LogTemp,Display,TEXT("added %f to %s"),XpAmount,*Names[SkillId].ToString());
+		}
+		else
+		{
+			UE_LOG(LogTemp,Warning,TEXT("Max xp for lifeskill %s is 0"),*Names[SkillId].ToString());
+		}
 	}
 	return false;
 	
 }
 
-void ULevelComponent::OverwriteData(TArray<int> newLevels, TArray<float> newMaxXp, TArray<float> newCurrentXp, TArray<FXpBoostTimerStruct> newActiveXpBoosts)
+bool ULevelComponent::AddXpToSkill(EXpTypeEnum XpType, float XpAmount)
+{
+	CurrentXp[static_cast<uint32>(XpType)] += 4;
+	GEngine->AddOnScreenDebugMessage(-1,2.0f,FColor::Green,FString::Printf(TEXT("XpType: %i"),static_cast<uint8>(XpType)));
+	return false;
+}
+
+void ULevelComponent::OverwriteData(TArray<int> newLevels, TArray<float> newMaxXp, TArray<float> newCurrentXp, UBuffComponent* XpBuffComp)
 {
 	Levels = newLevels;
 	MaxXp = newMaxXp;
 	CurrentXp = newCurrentXp;
-	ActiveXpBoosts = newActiveXpBoosts;
+	
 }
 
 int ULevelComponent::GetTotalLevel() const
@@ -116,78 +151,4 @@ TArray<FLifeskillStruct> ULevelComponent::GetAllSkillInfos()
 int ULevelComponent::GetSkillCount() const
 {
 	return Levels.Num();
-}
-
-void ULevelComponent::InitializeXpBoosts()
-{
-	
-}
-
-void ULevelComponent::XpBuffFinished()
-{
-	const FXpBoostTimerStruct CurrentBoost = ActiveXpBoosts[0];
-	ActiveXpBoosts.RemoveAt(0);
-	
-	for (FXpBoostTimerStruct& ActiveBoost : ActiveXpBoosts)
-	{
-		ActiveBoost.RemainingTime -= CurrentBoost.RemainingTime;
-	}
-	SetNextTimer();
-}
-
-void ULevelComponent::SortXpBoostIntoTimeline(FXpBoostTimerStruct XpBoost)
-{
-	if(GetWorld()->GetTimerManager().IsTimerActive(ActiveXpBoostTimerHandle))
-	{
-		GetWorld()->GetTimerManager().PauseTimer(ActiveXpBoostTimerHandle);
-		const float RemainingTime = GetWorld()->GetTimerManager().GetTimerElapsed(ActiveXpBoostTimerHandle);
-		ReduceAllTimersBySeconds(RemainingTime);
-	}
-	
-	ActiveXpBoosts.Add(XpBoost);
-	Algo::SortBy(ActiveXpBoosts, &FXpBoostTimerStruct::RemainingTime);
-
-	for(const FXpBoostTimerStruct& XpBoost : ActiveXpBoosts)
-	{
-		UE_LOG(LogTemp, Display, TEXT("Remaining Time: %f with %f % boost"),XpBoost.RemainingTime,XpBoost.XpBoost);
-	}
-
-	SetNextTimer();
-}
-
-void ULevelComponent::SetNextTimer()
-{
-	//GetWorld()->GetTimerManager().GetTimerElapsed(ActiveXpBoostTimerHandle);
-	
-	if(ActiveXpBoosts.Num()>0)
-	{
-		GetWorld()->GetTimerManager().SetTimer(ActiveXpBoostTimerHandle,this,&ULevelComponent::XpBuffFinished,ActiveXpBoosts[0].RemainingTime,false);
-		UE_LOG(LogTemp,Display,TEXT("Started Xp Boost Timer: %f seconds, %f boost"),ActiveXpBoosts[0].RemainingTime,ActiveXpBoosts[0].XpBoost);
-	}
-	else
-	{
-		UE_LOG(LogTemp,Display,TEXT("No Xp boosts active. Not starting the timer again."));
-	}
-
-	CalculateTotalXpBoost();
-		
-}
-
-void ULevelComponent::ReduceAllTimersBySeconds(float time)
-{
-	for (FXpBoostTimerStruct& ActiveBoost : ActiveXpBoosts)
-	{
-		ActiveBoost.RemainingTime -= time;
-	}
-}
-
-float ULevelComponent::CalculateTotalXpBoost()
-{
-	GeneralXpBonus = 0.0f;
-	for(const FXpBoostTimerStruct& ActiveBoost : ActiveXpBoosts)
-	{
-		GeneralXpBonus += ActiveBoost.XpBoost;
-	}
-	UE_LOG(LogTemp,Display,TEXT("Total Xp boost is now %f %"),(1+GeneralXpBonus)*100.0f);
-	return GeneralXpBonus;
 }
