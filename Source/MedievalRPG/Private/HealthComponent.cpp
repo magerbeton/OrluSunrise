@@ -136,6 +136,11 @@ void UHealthComponent::StopRegenerate()
 }
 
 
+bool UHealthComponent::HasDied() const
+{
+	return Health<=0.0f;
+}
+
 // Called when the game starts
 void UHealthComponent::BeginPlay()
 {

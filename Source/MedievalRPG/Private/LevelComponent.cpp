@@ -6,6 +6,7 @@
 #include "BoosterStruct.h"
 #include "BuffComponent.h"
 #include "LifeskillStruct.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values for this component's properties
 ULevelComponent::ULevelComponent()
@@ -29,6 +30,12 @@ ULevelComponent::ULevelComponent()
 	MaxXp.Init(100.0f,Names.Num());
 	SkillXpBonus.Init(0.0f,Names.Num());
 	GeneralXpBonus = 0.0f;
+
+	const ConstructorHelpers::FObjectFinder<USoundBase>LevelUpSoundObject(TEXT("SoundCue'/Game/Sounds/ButtonSound/ButtonSound_Cue.ButtonSound_Cue'"));
+	if(LevelUpSoundObject.Succeeded())
+	{
+		LevelUpSound = LevelUpSoundObject.Object;
+	}
 
 	
 	
@@ -62,7 +69,7 @@ void ULevelComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	// ...
 }
 
-bool ULevelComponent::AddXpToSkill(int SkillId, float XpAmount)
+/*bool ULevelComponent::AddXpToSkill(int SkillId, float XpAmount)
 {
     //GEngine->AddOnScreenDebugMessage(-1,2.0f,FColor::Cyan,FString::Printf(TEXT("Skill ID: %i, CurrentXpLen: %i, MaxXpLen: %i, Levels: %i"),SkillId,CurrentXp.Num(),MaxXp.Num(),Levels.Num()));
 	//UE_LOG(LogTemp,Display,TEXT("Skill ID: %i, CurrentXpLen: %i, MaxXpLen: %i, Levels: %i"),SkillId,CurrentXp.Num(),MaxXp.Num(),Levels.Num());
@@ -94,12 +101,39 @@ bool ULevelComponent::AddXpToSkill(int SkillId, float XpAmount)
 	}
 	return false;
 	
-}
+}*/
 
 bool ULevelComponent::AddXpToSkill(EXpTypeEnum XpType, float XpAmount)
 {
-	CurrentXp[static_cast<uint32>(XpType)] += 4;
-	GEngine->AddOnScreenDebugMessage(-1,2.0f,FColor::Green,FString::Printf(TEXT("XpType: %i"),static_cast<uint8>(XpType)));
+	int SkillId = static_cast<uint8>(XpType);
+	UE_LOG(LogTemp,Display,TEXT("SkillID = %i"),SkillId);
+	if(CurrentXp.IsValidIndex(SkillId))
+	{
+		if(!XpBuffComponent->IsValidLowLevel())
+		{
+			UE_LOG(LogTemp,Warning,TEXT("Buffcomponent is missing"));
+			return false;
+		}
+		
+		const float TotalXpBoost = XpBuffComponent->CalculateTotalXpBoost();
+		CurrentXp[SkillId] += XpAmount * (1+TotalXpBoost+SkillXpBonus[SkillId]);
+		if(abs(MaxXp[SkillId]) != 0.0f)
+		{
+			while(CurrentXp[SkillId]>MaxXp[SkillId])
+			{
+				Levels[SkillId] += 1;
+				CurrentXp[SkillId] -= MaxXp[SkillId];
+				UE_LOG(LogTemp,Display,TEXT("Leveled %s up to level %i"),*Names[SkillId].ToString(),Levels[SkillId]);
+				LevelUp.Broadcast(XpType);
+				PlayLevelupSound();
+			}
+			UE_LOG(LogTemp,Display,TEXT("added %f to %s"),XpAmount,*Names[SkillId].ToString());
+		}
+		else
+		{
+			UE_LOG(LogTemp,Warning,TEXT("Max xp for lifeskill %s is 0"),*Names[SkillId].ToString());
+		}
+	}
 	return false;
 }
 
@@ -108,6 +142,7 @@ void ULevelComponent::OverwriteData(TArray<int> newLevels, TArray<float> newMaxX
 	Levels = newLevels;
 	MaxXp = newMaxXp;
 	CurrentXp = newCurrentXp;
+	XpBuffComponent = XpBuffComp;
 	
 }
 
@@ -121,8 +156,9 @@ int ULevelComponent::GetTotalLevel() const
 	return TotalLevel;
 }
 
-FLifeskillStruct ULevelComponent::GetSkillInfo(int SkillId) const
+FLifeskillStruct ULevelComponent::GetSkillInfo(EXpTypeEnum EXpType) const
 {
+	int SkillId = static_cast<uint32>(EXpType);
 	if(Levels.IsValidIndex(SkillId) && MaxXp.IsValidIndex(SkillId) && CurrentXp.IsValidIndex(SkillId))
 	{
 		return FLifeskillStruct(SkillId,Levels[SkillId],MaxXp[SkillId],CurrentXp[SkillId]);
@@ -151,4 +187,13 @@ TArray<FLifeskillStruct> ULevelComponent::GetAllSkillInfos()
 int ULevelComponent::GetSkillCount() const
 {
 	return Levels.Num();
+}
+
+void ULevelComponent::PlayLevelupSound() const
+{
+	if(AudioComponent->IsValidLowLevel())
+	{
+		AudioComponent->SetSound(LevelUpSound);
+		AudioComponent->Play();
+	}
 }

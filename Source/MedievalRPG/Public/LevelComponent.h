@@ -11,7 +11,7 @@
 
 class UBuffComponent;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelUp, int, XpType);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelUp, EXpTypeEnum, XpType);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MEDIEVALRPG_API ULevelComponent : public UActorComponent
@@ -47,12 +47,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="InitialVariables")
 	UBuffComponent* XpBuffComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="InitialVariables")
+	UAudioComponent* AudioComponent;
 	
 	UPROPERTY()
 	TArray<float> SkillXpBonus; //only gets affected by equipment -> perma buffs
 
 	UFUNCTION(BlueprintCallable, Category="XP")
-	bool AddXpToSkill(int SkillId, float XpAmount);
+	//bool AddXpToSkill(int SkillId, float XpAmount);
 	bool AddXpToSkill(EXpTypeEnum XpType, float XpAmount);
 
 	UFUNCTION(BlueprintCallable, Category="Constructor")
@@ -62,7 +65,7 @@ public:
 	int GetTotalLevel() const;
 
 	UFUNCTION(BlueprintCallable, Category="Variables")
-	FLifeskillStruct GetSkillInfo(int Skill) const;
+	FLifeskillStruct GetSkillInfo(EXpTypeEnum XpType) const;
 
 	UFUNCTION(BlueprintCallable, Category="Variables")
 	TArray<FLifeskillStruct> GetAllSkillInfos();
@@ -72,4 +75,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnLevelUp LevelUp;
+
+	UPROPERTY()
+	USoundBase* LevelUpSound;
+
+	void PlayLevelupSound() const;
 };

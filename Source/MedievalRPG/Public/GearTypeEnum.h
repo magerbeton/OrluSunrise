@@ -18,5 +18,8 @@ enum class EEquipmentType : uint8
 	Weapon_Grip	= 7		UMETA(DisplayName="Griff"),
 	Weapon_Pummel = 8	UMETA(DisplayName="Knauf"),
 	Weapon_Rohling = 9	UMETA(DisplayName="Rohling"),
-	Consumable = 10		UMETA(DisplayName="Consumable")
+	Consumable = 10		UMETA(DisplayName="Consumable"),
+	Armor_Accessory1 = 11 UMETA(DisplayName="Accessory1"),
+	Armor_Accessory2 = 12 UMETA(DisplayName="Accessory2")
+	// when adding a new component change EquipmentComponent last element in constructor to allow the new equipable
 };

@@ -49,4 +49,24 @@ public:
 	UItemsDatabase* ItemsDatabase;
 
 	void Debug_PrintInventory();
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Audio")
+	UAudioComponent* AudioComponent;
+	
+	UPROPERTY()
+	USoundBase* PickupSound;
+
+	void PlayPickupSound() const;
+
+	UFUNCTION(BlueprintCallable, Category="Equipment")
+	bool PrepareSlotForEquip(int SlotIndex);
+
+	UFUNCTION(BlueprintCallable, Category="Inventory")
+	bool ReduceItemFromSlot(int SlotIndex, int Amount);
+
+	UFUNCTION(BlueprintCallable, Category="Inventory")
+	void ClearSlot(int SlotIndex);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Inventory")
+	bool GetItemById(int Index, FReducedItemStruct& Item);
 };

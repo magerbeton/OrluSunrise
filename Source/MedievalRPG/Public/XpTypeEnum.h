@@ -15,14 +15,13 @@
 UENUM(BlueprintType)
 enum class EXpTypeEnum : uint8
 {
-	None = 0				UMETA(DisplayName="None"),
-	WoodChopping = 1		UMETA(DisplayName="Holzhacken"),
-	Mining = 2				UMETA(DisplayName="Bergbau"),
-	Gathering = 3			UMETA(DisplayName="Sammeln"),
-	Heating = 4				UMETA(DisplayName="Erhitzen"),
-	Smithing = 5			UMETA(DisplayName="Schmieden"),
-	Combat = 6				UMETA(DisplayName="Kampf"),
-	Cooking = 7				UMETA(DisplayName="Kochen"),
-	Crafting = 8			UMETA(DisplayName="Herstellen")
+	WoodChopping = 0		UMETA(DisplayName="Holzhacken"),
+	Mining = 1				UMETA(DisplayName="Bergbau"),
+	Gathering = 2			UMETA(DisplayName="Sammeln"),
+	Heating = 3				UMETA(DisplayName="Erhitzen"),
+	Smithing = 4			UMETA(DisplayName="Schmieden"),
+	Combat = 5				UMETA(DisplayName="Kampf"),
+	Cooking = 6				UMETA(DisplayName="Kochen"),
+	Crafting = 7			UMETA(DisplayName="Herstellen")
 	
 };

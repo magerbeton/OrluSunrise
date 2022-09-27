@@ -3,13 +3,15 @@
 
 #include "InventoryComponent.h"
 
+#include "Components/AudioComponent.h"
+
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
 	NumberOfSlots = 24;
@@ -20,6 +22,13 @@ UInventoryComponent::UInventoryComponent()
 	{
 		ItemsDatabase = ItemDatabaseObj.Object;
 	}
+
+	const ConstructorHelpers::FObjectFinder<USoundBase>PickupSoundObj(TEXT("SoundCue'/Game/Sounds/ItemDroppedOnSlot/ItemDroppedOnSlot_Cue.ItemDroppedOnSlot_Cue'"));
+	if(PickupSoundObj.Succeeded())
+	{
+		PickupSound = PickupSoundObj.Object;
+	}
+	
 
 }
 
@@ -39,7 +48,7 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                         FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	// should never be used!
 	// ...
 }
 
@@ -59,6 +68,7 @@ bool UInventoryComponent::AddItemToInventory(FReducedItemStruct Item)
 		//item exists and can be stacked
 		Inventory[index].Amount += Item.Amount;
 		OnChangedItemSlot.Broadcast(index);
+		PlayPickupSound();
 		return true;
 	}
 	
@@ -79,6 +89,7 @@ bool UInventoryComponent::AddItemToInventory(FReducedItemStruct Item)
 		UE_LOG(LogTemp,Display,TEXT("Found empty slot and overwritten it with the item"));
 		Inventory[EmptySlotIndex] = Item;
 		OnChangedItemSlot.Broadcast(EmptySlotIndex);
+		PlayPickupSound();
 		return true;
 	}
 	
@@ -120,4 +131,68 @@ void UInventoryComponent::Debug_PrintInventory()
 		UE_LOG(LogTemp,Display,TEXT("%s"),*item.ItemAsString());
 	}
 }
+
+void UInventoryComponent::PlayPickupSound() const
+{
+	if(AudioComponent->IsValidLowLevel())
+	{
+		AudioComponent->SetSound(PickupSound);
+		AudioComponent->Play();
+	}
+}
+
+bool UInventoryComponent::PrepareSlotForEquip(int SlotIndex)
+{
+	if(!Inventory.IsValidIndex(SlotIndex))
+	{
+		return false;
+	}
+
+	if(ReduceItemFromSlot(SlotIndex, 1))
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+bool UInventoryComponent::ReduceItemFromSlot(int SlotIndex, int Amount)
+{
+	if(!Inventory.IsValidIndex(SlotIndex))
+	{
+		return false;
+	}
+
+	if(Inventory[SlotIndex].Amount - Amount < 0)
+	{
+		return false;
+	}
+	Inventory[SlotIndex].Amount -= Amount;
+	if(Inventory[SlotIndex].Amount <= 0)
+	{
+		ClearSlot(SlotIndex);
+		return true;
+	}
+	return true;
+	
+}
+
+void UInventoryComponent::ClearSlot(int SlotIndex)
+{
+	if(Inventory.IsValidIndex(SlotIndex))
+	{
+		Inventory[SlotIndex] = FReducedItemStruct();
+	}
+}
+
+bool UInventoryComponent::GetItemById(int Index, FReducedItemStruct& Item)
+{
+	if(!Inventory.IsValidIndex(Index))
+	{
+		return false;
+	}
+	Item = Inventory[Index];
+	return true;
+}
+
 

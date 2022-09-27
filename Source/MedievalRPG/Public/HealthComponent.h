@@ -78,6 +78,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnPlayerDie OnPlayerDie;
+
+	UFUNCTION(BlueprintCallable, Category="Health")
+	bool HasDied() const;
 	
 protected:
 	// Called when the game starts
