@@ -45,5 +45,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Items")
 	bool UnequipItem(UInventoryComponent* InventoryToAddTo, EEquipmentType EquipmentSlot);
+
+	UFUNCTION(BlueprintCallable, Category="Items")
+	void LogAllEquippedItems();
+
+	UFUNCTION(BlueprintCallable, Category="Items")
+	void LogSpecifiedItem(EEquipmentType ItemType);
 	
 };

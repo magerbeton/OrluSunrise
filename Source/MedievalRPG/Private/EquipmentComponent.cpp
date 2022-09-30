@@ -83,3 +83,19 @@ bool UEquipmentComponent::UnequipItem(UInventoryComponent* InventoryToAddTo, EEq
 	return false;
 }
 
+void UEquipmentComponent::LogAllEquippedItems()
+{
+	for (FReducedItemStruct& Item : EquippedItems)
+	{
+		UE_LOG(LogTemp,Display,TEXT("%s"),*Item.ItemAsString());
+	}
+}
+
+void UEquipmentComponent::LogSpecifiedItem(EEquipmentType ItemType)
+{
+	if(EquippedItems.IsValidIndex(static_cast<uint8>(ItemType)))
+	{
+		UE_LOG(LogTemp,Display,TEXT("%s"),*EquippedItems[static_cast<uint8>(ItemType)].ItemAsString());
+	}
+}
+
