@@ -22,7 +22,7 @@ class MEDIEVALRPG_API IDamageInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-
+	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Damage")
 	void Damage(AActor* InflictingActor, float Amount);
 

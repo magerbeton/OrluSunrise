@@ -80,6 +80,11 @@ void UHealthComponent::TimerHeal()
 	
 }
 
+/**
+ * @brief Inflicts a certain amount of damage on the health component
+ * @param Amount of Damage received
+ * @return the remaining health
+ */
 float UHealthComponent::TakeDamage(float Amount)
 {
 	if(Amount > 0)
@@ -87,7 +92,7 @@ float UHealthComponent::TakeDamage(float Amount)
 		Health -= Amount;
 		if(Health <= 0)
 		{
-			UE_LOG(LogTemp,Warning,TEXT("%s died"),*GetName());
+			UE_LOG(LogTemp,Warning,TEXT("%s died"),*GetOwner()->GetName());
 			OnPlayerDie.Broadcast();
 			//die
 		}

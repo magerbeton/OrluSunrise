@@ -9,7 +9,8 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerDie);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class MEDIEVALRPG_API UHealthComponent : public UActorComponent
+class 
+ UHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
 

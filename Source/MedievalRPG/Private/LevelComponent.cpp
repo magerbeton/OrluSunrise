@@ -105,7 +105,7 @@ void ULevelComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 bool ULevelComponent::AddXpToSkill(EXpTypeEnum XpType, float XpAmount)
 {
-	int SkillId = static_cast<uint8>(XpType);
+	const int SkillId = static_cast<uint8>(XpType);
 	UE_LOG(LogTemp,Display,TEXT("SkillID = %i"),SkillId);
 	if(CurrentXp.IsValidIndex(SkillId))
 	{
