@@ -95,7 +95,20 @@ void UEquipmentComponent::LogSpecifiedItem(EEquipmentType ItemType)
 {
 	if(EquippedItems.IsValidIndex(static_cast<uint8>(ItemType)))
 	{
-		UE_LOG(LogTemp,Display,TEXT("%s"),*EquippedItems[static_cast<uint8>(ItemType)].ItemAsString());
+		UE_LOG(LogTemp,Display,TEXT("Item is: %s"),*EquippedItems[static_cast<uint8>(ItemType)].ItemAsString());
 	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("Item ItemType is not valid access id"));
+	}
+}
+
+FReducedItemStruct UEquipmentComponent::GetItemByType(EEquipmentType Equipment, bool& Success) const
+{
+	if(!EquippedItems.IsValidIndex(static_cast<uint8>(Equipment)))
+	{
+		return FReducedItemStruct();
+	}
+	return EquippedItems[static_cast<uint8>(Equipment)];
 }
 

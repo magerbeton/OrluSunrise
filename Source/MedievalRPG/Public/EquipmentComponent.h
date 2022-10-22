@@ -51,5 +51,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Items")
 	void LogSpecifiedItem(EEquipmentType ItemType);
+
+	UFUNCTION(BlueprintCallable, Category="Items")
+	FReducedItemStruct GetItemByType(EEquipmentType Equipment, bool& Success) const;
 	
 };

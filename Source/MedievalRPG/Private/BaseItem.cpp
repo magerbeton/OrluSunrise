@@ -12,7 +12,7 @@ ABaseItem::ABaseItem()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	const ConstructorHelpers::FObjectFinder<UItemsDatabase>ItemsDatabase_obj(TEXT(""));
+	const ConstructorHelpers::FObjectFinder<UItemsDatabase>ItemsDatabase_obj(TEXT("ItemsDatabase'/Game/Data/DB_Items.DB_Items'"));
 	if(ItemsDatabase_obj.Succeeded())
 	{
 		AllItems = ItemsDatabase_obj.Object;
