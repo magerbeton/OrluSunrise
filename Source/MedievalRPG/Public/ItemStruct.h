@@ -41,6 +41,9 @@ struct FItemStruct
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Visuals")
 	int ItemSellPrice;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Equipment")
+	bool Stackable;
+
 	// TODO: Make a function library which makes the struct functions usable by blueprints
 	FString ItemAsString() const
 	{
@@ -59,8 +62,9 @@ struct FItemStruct
 		EEquipmentType newEquipmentState = EEquipmentType::None,
 		UTexture2D* newItemImg = nullptr,
 		UStaticMesh* newItemMesh = nullptr,
-		int newItemSellPrice = 0);
-	
+		int newItemSellPrice = 0,
+		bool newStackable = true
+		);
 	
 };
 
@@ -87,7 +91,7 @@ public:
 };
 
 inline FItemStruct::FItemStruct(int newItemID, FText newItemName, FText newItemInfo, EEquipmentType newEquipmentState,
-                                UTexture2D* newItemImg, UStaticMesh* newItemMesh, int newItemSellPrice)
+                                UTexture2D* newItemImg, UStaticMesh* newItemMesh, int newItemSellPrice,bool newStackable)
 {
 	//constructor starts here:
 	ItemID = newItemID;
@@ -97,6 +101,8 @@ inline FItemStruct::FItemStruct(int newItemID, FText newItemName, FText newItemI
 	ItemImg = newItemImg;
 	ItemMesh = newItemMesh;
 	ItemSellPrice = newItemSellPrice;
+	Stackable = newStackable;
+	
 }
 
 

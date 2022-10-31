@@ -8,6 +8,8 @@
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
 
+class UEquipmentComponent;
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FChangedItemSlot, int, index);
 
 
@@ -69,4 +71,19 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Inventory")
 	bool GetItemById(int Index, FReducedItemStruct& Item);
+
+
+	
+	// Equipment related stuff
+	
+	UPROPERTY(BlueprintReadWrite)
+	UEquipmentComponent* EquipmentComponent;
+
+	UFUNCTION(BlueprintCallable)
+	bool EquipItem(UEquipmentComponent* EquipmentCompRef, EEquipmentType Type, FReducedItemStruct Item);
+	
+	UFUNCTION(BlueprintCallable)
+	bool UnequipItem(EEquipmentType Type);
+
+	// Equipment related stuff end
 };

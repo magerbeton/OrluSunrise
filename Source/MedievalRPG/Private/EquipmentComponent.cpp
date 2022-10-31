@@ -47,39 +47,17 @@ void UEquipmentComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 bool UEquipmentComponent::EquipItem(FReducedItemStruct Item, EEquipmentType SlotTypeDroppedOn)
 {
+	// get the full item information to confirm if it is allowed to go into the slot which it was dropped on
 	const FItemStruct FullItem = ItemsDatabase->GetItemByID(Item.ID);
 	if(FullItem.EquipmentType == SlotTypeDroppedOn)
 	{
+		// Item slot type is correct:
+		// Set the Equipment Slot to the new item.
 		EquippedItems[static_cast<uint8>(SlotTypeDroppedOn)] = Item;
 		OnEquipmentUpdated.Broadcast(SlotTypeDroppedOn);
 		return true;
 	}
-	return false;
-}
-
-/**
- * @brief Allows to unequip an item when the slot is not empty 
- * @param InventoryToAddTo The target inventory where the item from the slot should be added to
- * @param EquipmentSlot The slot from which the item should get unequipped from
- * @return Was the operation successful?
- */
-bool UEquipmentComponent::UnequipItem(UInventoryComponent* InventoryToAddTo, EEquipmentType EquipmentSlot)
-{
-	if(!EquippedItems.IsValidIndex(static_cast<uint8>(EquipmentSlot)))
-	{
-		return false;
-	}
-	
-	if(EquippedItems[static_cast<uint8>(EquipmentSlot)].ID == 0)
-	{
-		return false;
-	}
-
-	if(InventoryToAddTo->IsValidLowLevel())
-	{
-		InventoryToAddTo->AddItemToInventory(EquippedItems[static_cast<uint8>(EquipmentSlot)]);
-		return true;
-	}
+	UE_LOG(LogTemp,Display,TEXT("Dropped item on wrong slottype: %i"),static_cast<uint8>(SlotTypeDroppedOn));
 	return false;
 }
 
@@ -103,12 +81,28 @@ void UEquipmentComponent::LogSpecifiedItem(EEquipmentType ItemType)
 	}
 }
 
-FReducedItemStruct UEquipmentComponent::GetItemByType(EEquipmentType Equipment, bool& Success) const
+bool UEquipmentComponent::GetItemByType(EEquipmentType Equipment, FReducedItemStruct& Item) const
 {
 	if(!EquippedItems.IsValidIndex(static_cast<uint8>(Equipment)))
 	{
-		return FReducedItemStruct();
+		Item = FReducedItemStruct();
+		return false;
 	}
-	return EquippedItems[static_cast<uint8>(Equipment)];
+	Item = EquippedItems[static_cast<uint8>(Equipment)];
+	return true;
 }
 
+bool UEquipmentComponent::IsSlotEmpty(EEquipmentType Type) const
+{
+	const FReducedItemStruct TempItem = EquippedItems[static_cast<uint8>(Type)];
+	if(TempItem.ID == 0 || TempItem.Amount == 0)
+	{
+		return true;
+	}
+	return false;
+}
+
+void UEquipmentComponent::EmptySlot(EEquipmentType Type)
+{
+	EquippedItems[static_cast<uint8>(Type)] = FReducedItemStruct();
+}

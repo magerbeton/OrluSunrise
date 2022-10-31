@@ -10,7 +10,7 @@
 #include "BasePlayerState.generated.h"
 
 
-class UInventoryComponent; class ULevelComponent;
+class UInventoryComponent; class ULevelComponent; class UEquipmentComponent;
 /**
  * 
  */
@@ -25,10 +25,13 @@ public:
 	UInventoryComponent* Inventory;
 
 	UPROPERTY()
+	UEquipmentComponent* Equipment;
+	
+	UPROPERTY()
 	ULevelComponent* Levels;
 
 	UPROPERTY()
-	UPurseComponent* Coins;
+	UPurseComponent* Purse;
 
 	/**
 	 * @brief Implementation of the Experience interface

@@ -3,6 +3,7 @@
 
 #include "InventoryComponent.h"
 
+#include "EquipmentComponent.h"
 #include "Components/AudioComponent.h"
 
 
@@ -193,6 +194,81 @@ bool UInventoryComponent::GetItemById(int Index, FReducedItemStruct& Item)
 	}
 	Item = Inventory[Index];
 	return true;
+}
+
+bool UInventoryComponent::EquipItem(UEquipmentComponent* EquipmentCompRef, EEquipmentType Type, FReducedItemStruct Item)
+{
+	if(!EquipmentComponent->IsValidLowLevel())
+	{
+		UE_LOG(LogTemp,Warning,TEXT("Equipment component is not valid! Cant equip item"));
+		return false;
+	}
+
+	if(!EquipmentComponent->EquippedItems.IsValidIndex(static_cast<uint8>(Type)))
+	{
+		return false;
+	}
+
+	if(Item.ID == 0 || Item.Amount == 0)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("Cant pickup an item with amount=0 or id=0"))
+		return false;
+	}
+
+	// TODO: check if the slot was empty before adding item
+	// Equip the item to the slot
+
+	if(!EquipmentComponent->IsSlotEmpty(Type))
+	{
+		UnequipItem(Type);
+	}
+
+	int ItemIndex;
+	if(FindItemInInventory(Item,ItemIndex)) // is the item even in the inventory?
+	{
+		if(ItemsDatabase->GetItemByID(Item.ID).Stackable)
+		{
+			// if the item is stackable
+			ClearSlot(ItemIndex);
+		}
+		else
+		{
+			// if the item is not stackable
+			if(!ReduceItemFromSlot(ItemIndex,1)) // Subtract one item from the stack
+			{
+				return false;
+			}
+		}
+		EquipmentComponent->EquipItem(Item,Type);
+		return true;
+	}
+	
+	
+	
+	return false;
+}
+
+/**
+ * @brief Transfers an item from an equipment slot to an inventory slot
+ * @param Type is the Equipmentslot where the equipment is stored in
+ * @return Was the transfer successful?
+ */
+bool UInventoryComponent::UnequipItem(EEquipmentType Type)
+{
+	
+	if(EquipmentComponent == nullptr)
+	{
+		return false;
+	}
+
+	FReducedItemStruct Item;
+	if(EquipmentComponent->GetItemByType(Type,Item))
+	{
+		AddItemToInventory(Item);
+		EquipmentComponent->EmptySlot(Type);
+		return true;
+	}
+	return false;
 }
 
 
